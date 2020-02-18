@@ -19,15 +19,16 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-from importlib import import_module
 
+from bud.lib.plugin import Plugin
 
-class PluginLoader:
-    def __init__(self, config):
-        self.config = config
-        self.loaded = []
+class FakePluginOne(Plugin):
+    def pre(self):
+        pass
 
-    def load(self):
-        for plugin in self.config.plugins:
-            _module = import_module(plugin['module_path'])
-            self.loaded.append({**plugin, **{'module': _module}})
+    def build(self):
+        pass
+
+    def post(self):
+        pass
+

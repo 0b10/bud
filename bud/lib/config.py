@@ -30,8 +30,14 @@ from json import loads
 class ConfigAbstract(ABC):
     @property
     @abstractmethod
+    def plugins(self):
+        raise NotImplementedError('You must override the plugins property')
+
+    @property
+    @abstractmethod
     def repos(self):
         raise NotImplementedError('You must override the repos property')
+
 
 class ConfigMeta(ABCMeta, SingletonMeta):
     pass
