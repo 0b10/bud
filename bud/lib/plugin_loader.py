@@ -19,25 +19,11 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-from os import environ
-from os.path import isdir
-from bud.lib.globals import REPOS_ENV_VAR
-from abc import ABC, abstractmethod
 
-class ConfigAbstract(ABC):
-    @property
-    @abstractmethod
-    def repos(self):
-        raise NotImplementedError('You must override the repos property')
 
-class Config(ConfigAbstract):
-    @property
-    def repos(self):
-        try:
-            repos_path = environ[REPOS_ENV_VAR]
-        except KeyError:
-            raise EnvironmentError(f'You must set the {REPOS_ENV_VAR} env var')
+class PluginLoader:
+    def __init__(self, config):
+        self.config = config
 
-        assert isdir(repos_path), \
-            f'The env var: {REPOS_ENV_VAR}={repos_path} - should point to a directory.'
-        return repos_path
+    def load(self):
+        pass

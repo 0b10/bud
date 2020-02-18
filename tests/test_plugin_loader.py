@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # MIT License
 
 # Copyright (c) 2020, 0b10
@@ -19,25 +20,47 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-from os import environ
-from os.path import isdir
-from bud.lib.globals import REPOS_ENV_VAR
-from abc import ABC, abstractmethod
 
-class ConfigAbstract(ABC):
+"""Tests for `bud.lib.pl_factory` package."""
+
+
+import pytest
+from bud.lib.plugin_loader import PluginLoader
+from bud.lib.config import ConfigAbstract
+
+
+class FakeConfig(ConfigAbstract):
+    def __init__(self):
+        self._repos = '/fake/repos'
+
     @property
-    @abstractmethod
     def repos(self):
-        raise NotImplementedError('You must override the repos property')
+        # because it's abstract, it must be a getter
+        return self._repos
 
-class Config(ConfigAbstract):
-    @property
-    def repos(self):
-        try:
-            repos_path = environ[REPOS_ENV_VAR]
-        except KeyError:
-            raise EnvironmentError(f'You must set the {REPOS_ENV_VAR} env var')
 
-        assert isdir(repos_path), \
-            f'The env var: {REPOS_ENV_VAR}={repos_path} - should point to a directory.'
-        return repos_path
+@pytest.fixture
+def pl_factory():
+    def _(config=FakeConfig()):
+        return PluginLoader(config=config)
+    return _
+
+
+# >>> EXISTS >>>
+def test_exists(pl_factory):
+    assert pl_factory() is not None, \
+        "PluginLoader does not exist"
+
+
+@pytest.mark.parametrize('method_name', ['load'])
+def test_methods_exist(pl_factory, method_name):
+    assert getattr(pl_factory(), method_name) is not None, \
+        f'PluginLoader.{method_name}() does not exist'
+
+
+# >>> CONSTRUCT >>>
+def test_accepts_config(pl_factory):
+    assert pl_factory().config is not None, \
+        'the config prop should be set'
+    assert pl_factory().config.repos == '/fake/repos', \
+        'the config.repos prop should be set to an expected value'
