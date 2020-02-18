@@ -29,32 +29,74 @@ from bud.lib.config import Config
 from bud.lib.globals import REPOS_ENV_VAR
 from unittest.mock import patch
 import os
+import json
+
+FAKE_PLUGINS = [
+    {'name': 'fakename1', 'path': '/fake/path1'},
+    {'name': 'fakename2', 'path': '/fake/path2'}
+]
+
+FAKE_FILE_CONTENTS = json.dumps(
+    {'plugins': FAKE_PLUGINS}
+)
+
+
+class FakeFile:
+    # FIXME: make this the source of truth - make it convert result to dict
+    def __init__(self):
+        self.contents = FAKE_FILE_CONTENTS
 
 
 @pytest.fixture
-def config(monkeypatch):
+def config_factory(monkeypatch):
     with patch('bud.lib.config.isdir', return_value=True):  # patch assertion
-        yield Config()
+        def _(file=FakeFile()):
+            return Config(file=file)
+        yield _
     # must be removed manually
     monkeypatch.delenv(REPOS_ENV_VAR, raising=False)
 
 
 # >>> EXISTS >>>
-def test_exists(config):
-    assert config is not None, \
+def test_exists(config_factory):
+    assert config_factory() is not None, \
         "Config does not exist"
 
 
 # >>> PROPS >>>
-def test_repos_prop(config, monkeypatch):
+def test_repos_prop(config_factory, monkeypatch):
     monkeypatch.setenv(REPOS_ENV_VAR, '/fake/path')
-    assert config.repos == '/fake/path', \
+    assert config_factory().repos == '/fake/path', \
         "Config.repos mismatch"
 
 
+def test_plugins_prop(config_factory, monkeypatch):
+    _plugins = config_factory().plugins
+    assert _plugins is not None, \
+        "Config.plugins should be a list"
+    assert _plugins == FAKE_PLUGINS, \
+        "Config.plugins should equal an expected value"
+
+
+# >>> CONSTRUCTOR >>>
+def test_file_obj_constructor_var(config_factory):
+    assert config_factory().file is not None, \
+        'the file prop should be set'
+
+
 # >>> ERROR >>>
-def test_repos_prop_raises_when_not_set(config, monkeypatch):
+def test_repos_prop_raises_when_not_set(config_factory, monkeypatch):
     # raises when KeyError - so delete
     monkeypatch.delenv(REPOS_ENV_VAR, raising=False)
     with pytest.raises(EnvironmentError):
-        config.repos
+        config_factory().repos
+
+
+# >>> SINGLETON >>>
+def test_is_singleton(config_factory):
+    file = FakeFile()
+    one = config_factory()
+    two = config_factory(file=file)
+
+    assert one.file is two.file, \
+        'the file props should be the same object'

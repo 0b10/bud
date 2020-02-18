@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # MIT License
 
 # Copyright (c) 2020, 0b10
@@ -19,40 +20,35 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-from os import environ
-from os.path import isdir
-from bud.lib.globals import REPOS_ENV_VAR
+
+"""Tests for `bud.lib.common` package."""
+
+import pytest
 from bud.lib.common import SingletonMeta
-from abc import ABC, abstractmethod, ABCMeta
-from json import loads
 
 
-class ConfigAbstract(ABC):
-    @property
-    @abstractmethod
-    def repos(self):
-        raise NotImplementedError('You must override the repos property')
+class FakeClass(metaclass=SingletonMeta):
+    def __init__(self, canary):
+        self.canary = canary
 
-class ConfigMeta(ABCMeta, SingletonMeta):
-    pass
 
-# Config = ConfigMeta('Config', (ConfigAbstract), {plugins:.., repos:..})
-class Config(ConfigAbstract, metaclass=ConfigMeta):
-    def __init__(self, file):
-        self.file = file
-        self._contents = loads(self.file.contents)
+@pytest.fixture
+def class_factory():
+    def _(canary=False):
+        return FakeClass(canary=canary)
+    yield _
 
-    @property
-    def plugins(self):
-        return self._contents.get('plugins', [])
 
-    @property
-    def repos(self):
-        try:
-            repos_path = environ[REPOS_ENV_VAR]
-        except KeyError:
-            raise EnvironmentError(f'You must set the {REPOS_ENV_VAR} env var')
+def test_singleton_fixture_exists(class_factory):
+    assert isinstance(class_factory(), FakeClass), \
+        "FakeClass cannot be instantiated"
 
-        assert isdir(repos_path), \
-            f'The env var: {REPOS_ENV_VAR}={repos_path} - should point to a directory.'
-        return repos_path
+
+def test_singleton(class_factory):
+    one = class_factory()
+    two = class_factory()
+
+    one.canary = True  # two.canary would still be False if not a singleton
+
+    assert one.canary == two.canary, \
+        "Singleton class: FakeClass - canary props should match, because they should be the same object"
