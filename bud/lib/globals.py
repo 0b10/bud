@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # MIT License
 
 # Copyright (c) 2020, 0b10
@@ -21,31 +20,5 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""Tests for `bud.lib.plugin` package."""
 
-
-import pytest
-from bud.lib.plugin import Plugin
-
-
-@pytest.fixture
-def plugin():
-    return Plugin()
-
-
-# >>> EXISTS >>>
-def test_exists(plugin):
-    assert plugin is not None, \
-        "Plugin does not exist"
-
-
-@pytest.mark.parametrize('method_name', ['pre', 'build', 'post'])
-def test_methods_exist(plugin, method_name):
-    assert getattr(plugin, method_name) is not None, \
-        f'Plugin.{method_name}() does not exist'
-
-# >>> RETURN VALUE >>>
-@pytest.mark.parametrize('method_name', ['pre', 'build', 'post'])
-def test_default_return_values(plugin, method_name):
-    assert getattr(plugin, method_name)() == False, \
-        f'Plugin.{method_name}() should return False by default'
+REPOS_ENV_VAR = "BUD_REPOS"

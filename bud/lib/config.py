@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # MIT License
 
 # Copyright (c) 2020, 0b10
@@ -20,32 +19,19 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-
-"""Tests for `bud.lib.plugin` package."""
-
-
-import pytest
-from bud.lib.plugin import Plugin
+from os import environ
+from os.path import isdir
+from bud.lib.globals import REPOS_ENV_VAR
 
 
-@pytest.fixture
-def plugin():
-    return Plugin()
+class Config:
+    @property
+    def repos(self):
+        try:
+            repos_path = environ[REPOS_ENV_VAR]
+        except KeyError:
+            raise EnvironmentError(f'You must set the {REPOS_ENV_VAR} env var')
 
-
-# >>> EXISTS >>>
-def test_exists(plugin):
-    assert plugin is not None, \
-        "Plugin does not exist"
-
-
-@pytest.mark.parametrize('method_name', ['pre', 'build', 'post'])
-def test_methods_exist(plugin, method_name):
-    assert getattr(plugin, method_name) is not None, \
-        f'Plugin.{method_name}() does not exist'
-
-# >>> RETURN VALUE >>>
-@pytest.mark.parametrize('method_name', ['pre', 'build', 'post'])
-def test_default_return_values(plugin, method_name):
-    assert getattr(plugin, method_name)() == False, \
-        f'Plugin.{method_name}() should return False by default'
+        assert isdir(repos_path), \
+            f'The env var: {REPOS_ENV_VAR}={repos_path} - should point to a directory.'
+        return repos_path

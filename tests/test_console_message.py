@@ -21,7 +21,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""Tests for `bug.lib.console_message` package."""
+"""Tests for `bud.lib.console_message` package."""
 
 
 import pytest
