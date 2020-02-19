@@ -19,3 +19,41 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+
+import pytest
+from bud.lib.file import File
+
+
+@pytest.fixture
+def file_factory(tmp_path):
+    config_path = tmp_path / "bud.conf"
+
+    def _(path=config_path):
+        return {'file': File(path=path), 'path': str(path), 'tmp_path': tmp_path}
+    return _
+
+
+# >>> EXISTS >>>
+def test_exists(file_factory):
+    file = file_factory()['file']
+    assert isinstance(file, File), \
+        "File was not instantiated"
+
+
+def test_read_exists(file_factory):
+    file = file_factory()['file']
+    assert callable(file.read), \
+        "File.read doesn't exist, or isn't callable"
+
+
+# >>> READ >>>
+def test_call_read(file_factory):
+    fixture = file_factory()
+    file = fixture['file']
+    path = fixture['path']
+
+    with open(path, 'w') as f:
+        f.write('fake contents\ntest')
+
+    assert file.read() == 'fake contents\ntest', \
+        "File.read return an expected value"

@@ -19,3 +19,12 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+
+
+class File:
+    def __init__(self, path):
+        self._path = path
+
+    def read(self):
+        with open(self._path) as f:
+            return f.read()
