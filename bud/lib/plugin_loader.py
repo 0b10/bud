@@ -20,15 +20,29 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 from importlib import import_module
+from abc import ABC, abstractmethod
 
+class PluginLoaderAbstract(ABC):
+    @property
+    @abstractmethod
+    def loaded(self):
+        raise NotImplementedError('You must override the loaded property')
 
-class PluginLoader:
+    @abstractmethod
+    def load(self):
+        raise NotImplementedError('You must override the load() method')
+
+class PluginLoader(PluginLoaderAbstract):
     def __init__(self, config):
-        self.config = config
-        self.loaded = {}
+        self._config = config
+        self._loaded = {}
+
+    @property
+    def loaded(self):
+        return self._loaded
 
     def load(self):
         # loaded == { arbitrary_name: { module_path, class_name, module }, ... }
-        for name, data in self.config.plugins.items():
+        for name, data in self._config.plugins.items():
             _module = import_module(data['module_path'])
-            self.loaded[name] = {**data, **{'module': _module}}
+            self._loaded[name] = {**data, **{'module': _module}}

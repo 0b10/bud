@@ -78,9 +78,9 @@ def test_methods_exist(pl_factory, method_name):
 
 # >>> CONSTRUCT >>>
 def test_accepts_config(pl_factory):
-    assert pl_factory().config is not None, \
+    assert pl_factory()._config is not None, \
         'the config prop should be set'
-    assert pl_factory().config.repos == '/fake/repos', \
+    assert pl_factory()._config.repos == '/fake/repos', \
         'the config.repos prop should be set to an expected value'
 
 
