@@ -43,6 +43,8 @@ class ConfigMeta(ABCMeta, SingletonMeta):
     pass
 
 # Config = ConfigMeta('Config', (ConfigAbstract), {plugins:.., repos:..})
+
+
 class Config(ConfigAbstract, metaclass=ConfigMeta):
     def __init__(self, file):
         self.file = file

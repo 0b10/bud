@@ -6,7 +6,6 @@ import pytest
 
 from click.testing import CliRunner
 
-from bud import bud
 from bud import cli
 
 

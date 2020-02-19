@@ -27,7 +27,7 @@
 import pytest
 from bud.lib.plugin_loader import PluginLoader
 from bud.lib.plugin_runner import PluginRunner
-from unittest.mock import MagicMock, patch, call
+from unittest.mock import MagicMock, patch
 from .fixtures import plugin_one, plugin_two
 
 
@@ -35,7 +35,8 @@ from .fixtures import plugin_one, plugin_two
 def fake_plugins():
     def _(modules):
         # add custom modules, these are will should be mocked.
-        # ! don't use this unless you are testing modules, otherwise you will be writing lots of mocks.
+        # ! don't use this unless you are testing modules,
+        # !  otherwise you will be writing lots of mocks.
         plugins = {
             'fakename1': {'module_path': 'ignorethis.plugin_one', 'class_name': 'FakePluginOne'},
             'fakename2': {'module_path': 'ignorethis.plugin_two', 'class_name': 'FakePluginTwo'}
@@ -107,8 +108,8 @@ class TestWithPatchedPlugins:
         assert mocked_p1_post.called
         assert mocked_p2_post.called
 
-
     # >>> RUN_SOME >>>
+
     def test_call_run_some(
         self,
         mocked_p1_pre,
@@ -134,7 +135,6 @@ class TestWithPatchedPlugins:
         assert mocked_p2_build.called
         assert mocked_p1_post.called
         assert mocked_p2_post.called
-
 
     def test_call_run_some_name(
         self,

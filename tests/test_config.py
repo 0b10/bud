@@ -28,7 +28,6 @@ import pytest
 from bud.lib.config import Config
 from bud.lib.globals import REPOS_ENV_VAR
 from unittest.mock import patch
-import os
 import json
 
 FAKE_PLUGINS = [

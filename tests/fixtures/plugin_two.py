@@ -22,6 +22,7 @@
 
 from bud.lib.plugin import Plugin
 
+
 class FakePluginTwo(Plugin):
     def pre(self):
         pass
@@ -31,4 +32,3 @@ class FakePluginTwo(Plugin):
 
     def post(self):
         pass
-

@@ -48,6 +48,7 @@ clean-test: ## remove test and coverage artifacts
 	rm -fr .pytest_cache
 
 lint: ## check style with flake8
+	autopep8 --aggressive --aggressive --recursive --in-place bud/ tests/
 	flake8 bud tests
 
 test: ## run tests quickly with the default Python

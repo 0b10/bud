@@ -19,11 +19,13 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-from abc import ABC, abstractmethod
+from abc import ABC
+
 
 class PluginRunnerAbstract(ABC):
     def run_all(self):
         raise NotImplementedError('You must override run_all()')
+
 
 class PluginRunner(PluginRunnerAbstract):
     def __init__(self, loader):
@@ -50,4 +52,3 @@ class PluginRunner(PluginRunnerAbstract):
             data = self._loader.loaded[name]
             plugin = self._get_plugin(data)
             self._run(plugin)
-

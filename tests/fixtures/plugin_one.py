@@ -22,13 +22,13 @@
 
 from bud.lib.plugin import Plugin
 
+
 class FakePluginOne(Plugin):
     def pre(self):
-        print("FakePluginOne pre called");
+        print("FakePluginOne pre called")
 
     def build(self):
-        print("FakePluginOne build called");
+        print("FakePluginOne build called")
 
     def post(self):
-        print("FakePluginOne post called");
-
+        print("FakePluginOne post called")

@@ -51,4 +51,5 @@ def test_singleton(class_factory):
     one.canary = True  # two.canary would still be False if not a singleton
 
     assert one.canary == two.canary, \
-        "Singleton class: FakeClass - canary props should match, because they should be the same object"
+        "Singleton class: FakeClass - canary props should match," +\
+        "because they should be the same object"

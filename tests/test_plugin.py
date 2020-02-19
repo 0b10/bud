@@ -47,5 +47,5 @@ def test_methods_exist(plugin, method_name):
 # >>> RETURN VALUE >>>
 @pytest.mark.parametrize('method_name', ['pre', 'build', 'post'])
 def test_default_return_values(plugin, method_name):
-    assert getattr(plugin, method_name)() == False, \
+    assert getattr(plugin, method_name)() is False, \
         f'Plugin.{method_name}() should return False by default'

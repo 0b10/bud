@@ -100,10 +100,11 @@ def test_module_loader_is_called(pl_factory):
 
 
 def test_loader_associates_module_correctly(pl_factory):
-    with patch('bud.lib.plugin_loader.import_module', return_value='placeholder_module_name') as mock_import:
+    with patch('bud.lib.plugin_loader.import_module', return_value='placeholder_module_name'):
         plugin_loader = pl_factory()
         plugin_loader.load()
-        assert isinstance(plugin_loader.loaded, dict) and len(plugin_loader.loaded) == len(FAKE_PLUGINS), \
+        assert isinstance(plugin_loader.loaded, dict) and \
+            len(plugin_loader.loaded) == len(FAKE_PLUGINS), \
             'The loaded prop should be a non-empty list'
 
         for name, _ in FAKE_PLUGINS.items():

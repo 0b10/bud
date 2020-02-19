@@ -25,10 +25,10 @@
 class Plugin:
     # TODO: inject logger, and config objects into each method
     def pre(self):
-        return False # skip logging etc.
+        return False  # skip logging etc.
 
     def build(self):
-        return False # skip logging etc.
+        return False  # skip logging etc.
 
     def post(self):
-        return False # skip logging etc.
+        return False  # skip logging etc.

@@ -22,6 +22,7 @@
 from importlib import import_module
 from abc import ABC, abstractmethod
 
+
 class PluginLoaderAbstract(ABC):
     @property
     @abstractmethod
@@ -31,6 +32,7 @@ class PluginLoaderAbstract(ABC):
     @abstractmethod
     def load(self):
         raise NotImplementedError('You must override the load() method')
+
 
 class PluginLoader(PluginLoaderAbstract):
     def __init__(self, config):
