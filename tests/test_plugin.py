@@ -30,22 +30,26 @@ from bud.lib.plugin import Plugin
 
 @pytest.fixture
 def plugin():
-    return Plugin()
+    def _():
+        return Plugin()
+    yield _
 
 
 # >>> EXISTS >>>
 def test_exists(plugin):
-    assert plugin is not None, \
-        "Plugin does not exist"
+    assert isinstance(plugin(), Plugin), \
+        'Plugin does not exist'
 
 
 @pytest.mark.parametrize('method_name', ['pre', 'build', 'post'])
 def test_methods_exist(plugin, method_name):
-    assert getattr(plugin, method_name) is not None, \
-        f'Plugin.{method_name}() does not exist'
+    pl = plugin()
+    assert callable(getattr(pl, method_name)), \
+        f'Plugin.{method_name}() does not exist or isn\'t callable'
 
 # >>> RETURN VALUE >>>
 @pytest.mark.parametrize('method_name', ['pre', 'build', 'post'])
 def test_default_return_values(plugin, method_name):
-    assert getattr(plugin, method_name)() is False, \
+    pl = plugin()
+    assert getattr(pl, method_name)() is False, \
         f'Plugin.{method_name}() should return False by default'

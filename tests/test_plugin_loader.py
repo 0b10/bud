@@ -54,22 +54,21 @@ def fake_config_factory():
 
 # >>> EXISTS >>>
 def test_exists(pl_factory):
-    assert pl_factory() is not None, \
-        "PluginLoader does not exist"
+    assert isinstance(pl_factory(), PluginLoader), \
+        "PluginLoader was not instantiated"
 
 
 @pytest.mark.parametrize('method_name', ['load'])
 def test_methods_exist(pl_factory, method_name):
-    assert getattr(pl_factory(), method_name) is not None, \
+    assert hasattr(pl_factory(), method_name), \
         f'PluginLoader.{method_name}() does not exist'
 
 
 # >>> CONSTRUCT >>>
 def test_accepts_config(pl_factory):
-    assert pl_factory()._config is not None, \
+    loader = pl_factory()
+    assert isinstance(loader._config, Config), \
         'the config prop should be set'
-    assert pl_factory()._config.repos == '/fake/repos', \
-        'the config.repos prop should be set to an expected value'
 
 
 # >>> LOAD >>>

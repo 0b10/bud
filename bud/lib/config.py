@@ -28,8 +28,8 @@ from json import loads
 
 class Config(metaclass=SingletonMeta):
     def __init__(self, file):
-        self.file = file
-        self._contents = loads(self.file.contents)
+        self._file = file
+        self._contents = loads(self._file.contents)
 
     @property
     def plugins(self):
