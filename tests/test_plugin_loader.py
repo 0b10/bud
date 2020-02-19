@@ -26,28 +26,13 @@
 
 import pytest
 from bud.lib.plugin_loader import PluginLoader
-from bud.lib.config import ConfigAbstract
-from unittest.mock import patch, call
+from bud.lib.config import Config
+from unittest.mock import patch, call, MagicMock
 
 FAKE_PLUGINS = {
     'fakename1': {'module_path': 'plugins.plugin_one', 'class_name': 'FakePluginOne'},
     'fakename2': {'module_path': 'plugins.plugin_two', 'class_name': 'FakePluginTwo'}
 }
-
-
-class FakeConfig(ConfigAbstract):
-    def __init__(self, plugins):
-        self._repos = '/fake/repos'
-        self._plugins = plugins
-
-    @property
-    def plugins(self):
-        return self._plugins
-
-    @property
-    def repos(self):
-        # because it's abstract, it must be a getter
-        return self._repos
 
 
 @pytest.fixture
@@ -59,8 +44,11 @@ def pl_factory(fake_config_factory):
 
 @pytest.fixture
 def fake_config_factory():
-    def _(plugins=FAKE_PLUGINS):
-        return FakeConfig(plugins=plugins)
+    def _(plugins=FAKE_PLUGINS, repos='/fake/repos'):
+        config = MagicMock(spec_set=Config)
+        config.plugins = plugins
+        config.repos = repos
+        return config
     yield _
 
 

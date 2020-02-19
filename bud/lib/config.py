@@ -23,29 +23,10 @@ from os import environ
 from os.path import isdir
 from bud.lib.globals import REPOS_ENV_VAR
 from bud.lib.common import SingletonMeta
-from abc import ABC, abstractmethod, ABCMeta
 from json import loads
 
 
-class ConfigAbstract(ABC):
-    @property
-    @abstractmethod
-    def plugins(self):
-        raise NotImplementedError('You must override the plugins property')
-
-    @property
-    @abstractmethod
-    def repos(self):
-        raise NotImplementedError('You must override the repos property')
-
-
-class ConfigMeta(ABCMeta, SingletonMeta):
-    pass
-
-# Config = ConfigMeta('Config', (ConfigAbstract), {plugins:.., repos:..})
-
-
-class Config(ConfigAbstract, metaclass=ConfigMeta):
+class Config(metaclass=SingletonMeta):
     def __init__(self, file):
         self.file = file
         self._contents = loads(self.file.contents)

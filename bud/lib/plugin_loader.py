@@ -20,21 +20,9 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 from importlib import import_module
-from abc import ABC, abstractmethod
 
 
-class PluginLoaderAbstract(ABC):
-    @property
-    @abstractmethod
-    def loaded(self):
-        raise NotImplementedError('You must override the loaded property')
-
-    @abstractmethod
-    def load(self):
-        raise NotImplementedError('You must override the load() method')
-
-
-class PluginLoader(PluginLoaderAbstract):
+class PluginLoader:
     def __init__(self, config):
         self._config = config
         self._loaded = {}
