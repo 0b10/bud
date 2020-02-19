@@ -29,10 +29,11 @@ from bud.lib.plugin_loader import PluginLoader
 from bud.lib.config import ConfigAbstract
 from unittest.mock import patch, call
 
-FAKE_PLUGINS = [
-    { 'module_path': 'plugins.plugin_one', 'class_name': 'FakePluginOne' },
-    { 'module_path': 'plugins.plugin_two', 'class_name': 'FakePluginTwo' }
-]
+FAKE_PLUGINS = {
+    'fakename1': {'module_path': 'plugins.plugin_one', 'class_name': 'FakePluginOne'},
+    'fakename2': {'module_path': 'plugins.plugin_two', 'class_name': 'FakePluginTwo'}
+}
+
 
 class FakeConfig(ConfigAbstract):
     def __init__(self, plugins):
@@ -90,20 +91,25 @@ def test_module_loader_is_called(pl_factory):
         assert mock_import.called, \
             'The module loader was not called'
 
-        call_one = FAKE_PLUGINS[0]['module_path']
-        call_two = FAKE_PLUGINS[1]['module_path']
+        # these module paths are passed into the module loaded
+        call_one = FAKE_PLUGINS['fakename1']['module_path']
+        call_two = FAKE_PLUGINS['fakename2']['module_path']
 
         expected_calls = [call(call_one), call(call_two)]
         mock_import.assert_has_calls(expected_calls)
+
 
 def test_loader_associates_module_correctly(pl_factory):
     with patch('bud.lib.plugin_loader.import_module', return_value='placeholder_module_name') as mock_import:
         plugin_loader = pl_factory()
         plugin_loader.load()
-        assert isinstance(plugin_loader.loaded, list) and len(plugin_loader.loaded) == len(FAKE_PLUGINS), \
+        assert isinstance(plugin_loader.loaded, dict) and len(plugin_loader.loaded) == len(FAKE_PLUGINS), \
             'The loaded prop should be a non-empty list'
 
-        for plugin in zip(plugin_loader.loaded, FAKE_PLUGINS):
-            assert plugin[0]['module_path'] == plugin[1]['module_path']
-            assert plugin[0]['class_name'] == plugin[1]['class_name']
-            assert plugin[0]['module'] == 'placeholder_module_name'
+        for name, _ in FAKE_PLUGINS.items():
+            assert plugin_loader.loaded[name]['module_path'] == FAKE_PLUGINS[name]['module_path'], \
+                "module_path does not match injected value"
+            assert plugin_loader.loaded[name]['class_name'] == FAKE_PLUGINS[name]['class_name'], \
+                "class_name does not match injected value"
+            assert plugin_loader.loaded[name]['module'] == 'placeholder_module_name', \
+                "module does not match the injected (placeholder) value"

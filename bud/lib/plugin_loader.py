@@ -25,9 +25,10 @@ from importlib import import_module
 class PluginLoader:
     def __init__(self, config):
         self.config = config
-        self.loaded = []
+        self.loaded = {}
 
     def load(self):
-        for plugin in self.config.plugins:
-            _module = import_module(plugin['module_path'])
-            self.loaded.append({**plugin, **{'module': _module}})
+        # loaded == { arbitrary_name: { module_path, class_name, module }, ... }
+        for name, data in self.config.plugins.items():
+            _module = import_module(data['module_path'])
+            self.loaded[name] = {**data, **{'module': _module}}
